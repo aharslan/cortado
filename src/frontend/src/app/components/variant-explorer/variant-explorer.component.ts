@@ -146,7 +146,7 @@ export class VariantExplorerComponent
   maximized: boolean = false;
 
   public variants: Variant[] = [];
-  public displayed_variants: IVariant[] = [];
+  public displayed_variants: Variant[] = [];
   public colorMap: Map<string, string>;
   public sidebarHeight = 0;
 
@@ -662,6 +662,34 @@ export class VariantExplorerComponent
     }
 
     this.addSelectedVariantsToModelForGivenConformance(selectedVariants);
+  }
+
+  removeSelectedVariantFromModel(negativeVariant: Variant): void {
+    const positiveVariants: Variant[] = this.displayed_variants.filter(
+      (v) => v.deviations === 0 && v.id !== negativeVariant.id
+    );
+
+    // TODO we currently distinguish two cases here: 1. outdated conformance and 2. known conformance
+    // in the future, we want to use caching in the backend and use only a single call from frontend
+    if (this.isAnyVariantOutdated(positiveVariants)) {
+      this.addSelectedVariantsToModelForOutdatedConformance(positiveVariants);
+      return;
+    }
+
+    this.backendService
+      .removeSelectedVariantFromModel([negativeVariant], positiveVariants)
+      .pipe(takeUntil(this._destroy$))
+      .subscribe((tree) => {
+        setTimeout(
+          () => this.updateConformanceForVariant(negativeVariant, 0),
+          0
+        );
+        // this.updateConformanceForSingleVariantClicked(negativeVariant);
+        positiveVariants.forEach((v) => {
+          setTimeout(() => this.updateConformanceForVariant(v, 0), 0);
+          // this.updateConformanceForSingleVariantClicked(v);
+        });
+      });
   }
 
   handleTreePerformanceClear() {

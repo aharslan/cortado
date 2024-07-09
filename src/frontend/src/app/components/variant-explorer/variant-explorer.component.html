@@ -897,6 +897,23 @@
                       (showArcDiagram)="showSingleArcDiagram($event)"
                     ></app-variant-action-buttons>
                   </ng-template>
+
+                  <ng-template
+                    #removeVariantFromPTLangButton
+                    *ngIf="variant.deviations === 0"
+                  >
+                    <div
+                      class="cursor-pointer btn btn-outline-dark btn-sm remove-variant-button me-2 ms-2"
+                      (click)="removeSelectedVariantFromModel(variant)"
+                      ngbTooltip="remove fitting variant from process tree language"
+                      triggers="hover"
+                      container="body"
+                    >
+                      <i
+                        class="bi bi-x-circle-fill bi-x-circle text-danger"
+                      ></i>
+                    </div>
+                  </ng-template>
                 </tr>
               </ng-container>
             </ng-container>

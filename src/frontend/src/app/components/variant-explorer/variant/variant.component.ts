@@ -34,6 +34,8 @@ export class VariantComponent implements AfterViewInit {
   @ContentChild('subvariantButton') subvariantButton!: TemplateRef<any>;
   @ContentChild('infixSelection') infixSelection!: TemplateRef<any>;
   @ContentChild('removeVariantButton') removeVariantButton!: TemplateRef<any>;
+  @ContentChild('removeVariantFromPTLangButton')
+  removeVariantFromPTLangButton!: TemplateRef<any>;
 
   @Input()
   index: number;

@@ -369,6 +369,39 @@ export class BackendService {
       );
   }
 
+  removeSelectedVariantFromModel(
+    negativeVariant: Variant[],
+    positiveVariants: Variant[]
+  ): Observable<any> {
+    const body = {
+      pt: this.processTreeService.currentDisplayedProcessTree.copy(false),
+      negative_variant: negativeVariant.map((v) => [
+        v.variant.serialize(1),
+        v.infixType,
+        v.count,
+      ]),
+      positive_variants: positiveVariants.map((v) => [
+        v.variant.serialize(1),
+        v.infixType,
+        v.count,
+      ]),
+    };
+    return this.httpClient
+      .post(
+        ROUTES.HTTP_BASE_URL +
+          ROUTES.MODIFY_TREE +
+          'removeSelectedVariantFromModel',
+        body
+      )
+      .pipe(
+        tap((res) => {
+          this.processTreeService.set_currentDisplayedProcessTree_with_Cache(
+            res
+          );
+        })
+      );
+  }
+
   frequentSubtreeMining(config: MiningConfig): void {
     this.httpClient
       .post<Array<any>>(

@@ -81,7 +81,12 @@
     class="fixed-right"
     style="padding-left: 0px"
   >
-    <ng-container [ngTemplateOutlet]="removeVariantButton"></ng-container>
+    <div style="display: inline-flex">
+      <ng-container
+        [ngTemplateOutlet]="removeVariantFromPTLangButton"
+      ></ng-container>
+      <ng-container [ngTemplateOutlet]="removeVariantButton"></ng-container>
+    </div>
   </td>
 </ng-container>
 

@@ -23,9 +23,9 @@ def get_variant_info(
 
 
 def get_id_to_group_mapping(include_user_defined=False) -> Dict:
-    variants: Mapping[int, Tuple[Group, Trace, List, VariantInformation]] = (
-        cache.variants
-    )
+    variants: Mapping[
+        int, Tuple[Group, Trace, List, VariantInformation]
+    ] = cache.variants
     variants = {
         k: v[0]
         for k, v in variants.items()

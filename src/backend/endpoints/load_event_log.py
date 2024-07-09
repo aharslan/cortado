@@ -90,10 +90,10 @@ def get_c_variants(
     )
 
     total_traces: int = len(event_log)
-    info_generator: Callable[[list[Trace]], VariantInformation] = (
-        lambda _: VariantInformation(
-            infix_type=InfixType.NOT_AN_INFIX, is_user_defined=False
-        )
+    info_generator: Callable[
+        [list[Trace]], VariantInformation
+    ] = lambda _: VariantInformation(
+        infix_type=InfixType.NOT_AN_INFIX, is_user_defined=False
     )
 
     return variants_to_variant_objects(

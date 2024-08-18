@@ -2,6 +2,7 @@ from typing import List
 from cortado_core.negative_process_model_repair.trace_remover import (
     apply_negative_process_model_repair,
     apply_frequency_rating_based_negative_process_model_repair,
+    apply_sub_tree_rating_based_negative_process_model_repair,
 )
 from cortado_core.utils.trace import TypedTrace
 from backend_utilities.process_tree_conversion import (
@@ -19,11 +20,20 @@ def remove_variant_from_process_model(
     pt, frozen_subtrees = dict_to_process_tree(pt_dict)
 
     (
-        updated_tree,
+        tree_updated,
+        resulting_tree,
         approach_used,
         percentage_positive_variants_conforming,
         resulting_tree_edit_distance,
         applied_rules,
+        failed_updates,
+        update_operations
     ) = apply_negative_process_model_repair(pt, negative_variant, positive_variants)
-    res = process_tree_to_dict(updated_tree)
+    #) = apply_sub_tree_rating_based_negative_process_model_repair(pt, negative_variant, positive_variants)
+
+    if tree_updated:
+        res = process_tree_to_dict(resulting_tree)
+    else:
+        res = pt_dict
+
     return res

@@ -369,7 +369,7 @@ export class BackendService {
       );
   }
 
-  removeSelectedVariantFromModel(
+  removeSelectedVariantFromModelCompleteBruteForce(
     negativeVariant: Variant[],
     positiveVariants: Variant[]
   ): Observable<any> {
@@ -390,7 +390,73 @@ export class BackendService {
       .post(
         ROUTES.HTTP_BASE_URL +
           ROUTES.MODIFY_TREE +
-          'removeSelectedVariantFromModel',
+          'removeSelectedVariantFromModelCompleteBruteForce',
+        body
+      )
+      .pipe(
+        tap((res) => {
+          this.processTreeService.set_currentDisplayedProcessTree_with_Cache(
+            res
+          );
+        })
+      );
+  }
+
+  removeSelectedVariantFromModelHeuristicBruteForce(
+    negativeVariant: Variant[],
+    positiveVariants: Variant[]
+  ): Observable<any> {
+    const body = {
+      pt: this.processTreeService.currentDisplayedProcessTree.copy(false),
+      negative_variant: negativeVariant.map((v) => [
+        v.variant.serialize(1),
+        v.infixType,
+        v.count,
+      ]),
+      positive_variants: positiveVariants.map((v) => [
+        v.variant.serialize(1),
+        v.infixType,
+        v.count,
+      ]),
+    };
+    return this.httpClient
+      .post(
+        ROUTES.HTTP_BASE_URL +
+          ROUTES.MODIFY_TREE +
+          'removeSelectedVariantFromModelHeuristicBruteForce',
+        body
+      )
+      .pipe(
+        tap((res) => {
+          this.processTreeService.set_currentDisplayedProcessTree_with_Cache(
+            res
+          );
+        })
+      );
+  }
+
+  removeSelectedVariantFromModelSubTreeRating(
+    negativeVariant: Variant[],
+    positiveVariants: Variant[]
+  ): Observable<any> {
+    const body = {
+      pt: this.processTreeService.currentDisplayedProcessTree.copy(false),
+      negative_variant: negativeVariant.map((v) => [
+        v.variant.serialize(1),
+        v.infixType,
+        v.count,
+      ]),
+      positive_variants: positiveVariants.map((v) => [
+        v.variant.serialize(1),
+        v.infixType,
+        v.count,
+      ]),
+    };
+    return this.httpClient
+      .post(
+        ROUTES.HTTP_BASE_URL +
+          ROUTES.MODIFY_TREE +
+          'removeSelectedVariantFromModelSubTreeRating',
         body
       )
       .pipe(

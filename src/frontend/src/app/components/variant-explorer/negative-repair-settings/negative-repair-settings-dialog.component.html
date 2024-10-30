@@ -1,0 +1,128 @@
+<div class="modal-header h-line-modal-bottom">
+  <h5 class="modal-title text-light" id="clusteringSettingsLabel">
+    Negative Repair Settings
+  </h5>
+
+  <button
+    type="button"
+    class="btn-close btn-close-white"
+    (click)="modal.dismiss('Cross click')"
+    aria-label="Close"
+  ></button>
+</div>
+
+<div class="modal-body">
+  <div class="d-flex flex-column">
+    <div class="form-select-element">
+      <label ngbAutofocus class="input-label">Identification Method: </label>
+      <select
+        [(ngModel)]="selectedNegativeRepairIdentificationAlgorithm"
+        class="form-select input-selector cursor-pointer"
+      >
+        <option *ngFor="let algo of options" [ngValue]="algo" selected>
+          {{ getDisplayName(algo) }}
+        </option>
+      </select>
+    </div>
+
+    <div class="form-select-element">
+      <label for="maxLoopExecutions" class="input-label"
+        >Max. Loop Executions:
+      </label>
+      <input
+        id="maxLoopExecutions"
+        type="number"
+        class="input-field-number"
+        [(ngModel)]="maxLoopExecutions"
+        aria-describedby="nSeqHelp"
+        placeholder="max distance"
+        min="0"
+      />
+    </div>
+    <div class="form-select-element">
+      <label for="maxLoopExecutionLength" class="input-label"
+        >Max. Length of Execution:
+      </label>
+      <input
+        id="maxLoopExecutionLength"
+        type="number"
+        class="input-field-number"
+        [(ngModel)]="maxLoopExecutionLength"
+        aria-describedby="nSeqHelp"
+        placeholder="max distance"
+        min="0"
+      />
+    </div>
+    <div class="form-element">
+<!--      <label for="stopOnThreshold" class="input-label"-->
+<!--        >Stop On Threshold:-->
+<!--      </label>-->
+<!--      <input-->
+<!--        id="stopOnThreshold"-->
+<!--        type="checkbox"-->
+<!--        class="input-field-number"-->
+<!--        [(ngModel)]="stopOnThreshold"-->
+<!--        aria-describedby="nSeqHelp"-->
+<!--        placeholder="max distance"-->
+<!--        min="0"-->
+<!--      />-->
+      <input
+        id="stopOnThreshold"
+        type="checkbox"
+        class="input-field"
+        style="margin-right: 10px"
+        [(ngModel)]="stopOnThreshold"
+      />
+      <label for="stopOnThreshold" class="input-label"
+        >Stop On Threshold:</label
+      >
+    </div>
+    <div class="form-select-element">
+      <label for="minPositiveFitness" class="input-label"
+        >Min. Fitness of Positive Traces:
+      </label>
+      <input
+        id="minPositiveFitness"
+        type="number"
+        class="input-field-number"
+        [(ngModel)]="minPositiveFitness"
+        aria-describedby="nSeqHelp"
+        placeholder="max distance"
+        min="10"
+        max="100"
+      />
+    </div>
+    <div class="form-select-element">
+      <label for="maxEditDistance" class="input-label"
+        >Max. Edit Distance:
+      </label>
+      <input
+        id="maxEditDistance"
+        type="number"
+        class="input-field-number"
+        [(ngModel)]="maxEditDistance"
+        aria-describedby="nSeqHelp"
+        placeholder="max distance"
+        min="1"
+        max="50"
+      />
+    </div>
+  </div>
+</div>
+
+<div class="modal-footer h-line-modal-top">
+  <button
+    type="button"
+    class="button"
+    data-bs-dismiss="modal"
+    (click)="modal.dismiss('cancel click')"
+  >
+    <i class="bi bi-x-lg btn-icon text-danger"></i>
+    Close
+  </button>
+
+  <button type="button" class="button" (click)="onApply()">
+    <i class="bi bi-save btn-icon text-success"></i>
+    Apply
+  </button>
+</div>

@@ -100,6 +100,8 @@ import { MaxValues } from './arc-diagram/filter/filter.component';
 import { ArcsViewMode } from './arc-diagram/arcs-view-mode';
 import { ArcDiagramService } from '../../services/arcDiagramService/arc-diagram.service';
 import { ArcDiagramComputationResult } from '../../services/arcDiagramService/model';
+import { NegativeRepairSettingsDialogComponent } from './negative-repair-settings/negative-repair-settings-dialog.component';
+import { NegativeRepairIdentificationAlgorithm } from '../../objects/NegativeRepairIdentificationAlgorithm';
 
 @Component({
   selector: 'app-variant-explorer',
@@ -669,27 +671,86 @@ export class VariantExplorerComponent
       (v) => v.deviations === 0 && v.id !== negativeVariant.id
     );
 
-    // TODO we currently distinguish two cases here: 1. outdated conformance and 2. known conformance
-    // in the future, we want to use caching in the backend and use only a single call from frontend
     if (this.isAnyVariantOutdated(positiveVariants)) {
       this.addSelectedVariantsToModelForOutdatedConformance(positiveVariants);
       return;
     }
 
-    this.backendService
-      .removeSelectedVariantFromModel([negativeVariant], positiveVariants)
-      .pipe(takeUntil(this._destroy$))
-      .subscribe((tree) => {
-        setTimeout(
-          () => this.updateConformanceForVariant(negativeVariant, 0),
-          0
-        );
-        // this.updateConformanceForSingleVariantClicked(negativeVariant);
-        positiveVariants.forEach((v) => {
-          setTimeout(() => this.updateConformanceForVariant(v, 0), 0);
-          // this.updateConformanceForSingleVariantClicked(v);
-        });
-      });
+    const negativeRepairModel = this.modalService.open(
+      NegativeRepairSettingsDialogComponent,
+      {
+        ariaLabelledBy: 'modal-basic-title',
+      }
+    );
+    negativeRepairModel.componentInstance.numberOfVariants =
+      this.variants.length;
+
+    negativeRepairModel.result.then(
+      (algo) => {
+        switch (algo) {
+          case NegativeRepairIdentificationAlgorithm.NEGATIVE_BRUTE_FORCE:
+            this.backendService
+              .removeSelectedVariantFromModelCompleteBruteForce(
+                [negativeVariant],
+                positiveVariants
+              )
+              .pipe(takeUntil(this._destroy$))
+              .subscribe((tree) => {
+                setTimeout(
+                  () => this.updateConformanceForVariant(negativeVariant, 0),
+                  0
+                );
+                // this.updateConformanceForSingleVariantClicked(negativeVariant);
+                positiveVariants.forEach((v) => {
+                  setTimeout(() => this.updateConformanceForVariant(v, 0), 0);
+                  // this.updateConformanceForSingleVariantClicked(v);
+                });
+              });
+            break;
+          case NegativeRepairIdentificationAlgorithm.POSITIVE_BRUTE_FORCE:
+            this.backendService
+              .removeSelectedVariantFromModelHeuristicBruteForce(
+                [negativeVariant],
+                positiveVariants
+              )
+              .pipe(takeUntil(this._destroy$))
+              .subscribe((tree) => {
+                setTimeout(
+                  () => this.updateConformanceForVariant(negativeVariant, 0),
+                  0
+                );
+                // this.updateConformanceForSingleVariantClicked(negativeVariant);
+                positiveVariants.forEach((v) => {
+                  setTimeout(() => this.updateConformanceForVariant(v, 0), 0);
+                  // this.updateConformanceForSingleVariantClicked(v);
+                });
+              });
+            break;
+          case NegativeRepairIdentificationAlgorithm.SUBTREE_RATING:
+            this.backendService
+              .removeSelectedVariantFromModelSubTreeRating(
+                [negativeVariant],
+                positiveVariants
+              )
+              .pipe(takeUntil(this._destroy$))
+              .subscribe((tree) => {
+                setTimeout(
+                  () => this.updateConformanceForVariant(negativeVariant, 0),
+                  0
+                );
+                // this.updateConformanceForSingleVariantClicked(negativeVariant);
+                positiveVariants.forEach((v) => {
+                  setTimeout(() => this.updateConformanceForVariant(v, 0), 0);
+                  // this.updateConformanceForSingleVariantClicked(v);
+                });
+              });
+            break;
+        }
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
   }
 
   handleTreePerformanceClear() {

@@ -8,7 +8,8 @@ from cortado_core.freezing.reinsert_frozen_subtrees import post_process_tree
 from fastapi import APIRouter
 from pydantic import BaseModel
 from src.backend.endpoints.remove_variant_from_process_model import (
-    remove_variant_from_process_model,
+    remove_variant_from_process_model_complete_brute_force,
+    remove_variant_from_process_model_heuristic_brute_force, remove_variant_from_process_model_sub_tree_rating,
 )
 
 router = APIRouter(tags=["modifyTree"], prefix="/modifyTree")
@@ -30,8 +31,20 @@ class InputRemoveSelectedVariantFromModel(BaseModel):
     pt: dict
 
 
-@router.post("/removeSelectedVariantFromModel")
-async def remove_selected_variant_from_model(d: InputRemoveSelectedVariantFromModel):
-    return remove_variant_from_process_model(
+@router.post("/removeSelectedVariantFromModelCompleteBruteForce")
+async def remove_selected_variant_from_model_complete_brute_force(d: InputRemoveSelectedVariantFromModel):
+    return remove_variant_from_process_model_complete_brute_force(
+        d.pt, d.negative_variant, d.positive_variants
+    )
+
+@router.post("/removeSelectedVariantFromModelHeuristicBruteForce")
+async def remove_selected_variant_from_model_heuristic_brute_force(d: InputRemoveSelectedVariantFromModel):
+    return remove_variant_from_process_model_heuristic_brute_force(
+        d.pt, d.negative_variant, d.positive_variants
+    )
+
+@router.post("/removeSelectedVariantFromModelSubTreeRating")
+async def remove_selected_variant_from_model_sub_tree_rating(d: InputRemoveSelectedVariantFromModel):
+    return remove_variant_from_process_model_sub_tree_rating(
         d.pt, d.negative_variant, d.positive_variants
     )
